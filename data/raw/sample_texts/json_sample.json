@@ -1,0 +1,9 @@
+{
+  "title": "نمونه JSON",
+  "date": "۱۴۰۳/۰۶/۲۵",
+  "people": [
+    {"name": "سارا احمدی", "city": "تهران"},
+    {"name": "Reza Karimi", "city": "Shiraz"}
+  ],
+  "tags": ["NLP", "Tokenization", "Regex"]
+}

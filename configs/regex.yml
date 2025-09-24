@@ -1,0 +1,34 @@
+# regex config for CLI demos (src/cli/run_regex.py)
+
+numbers:
+  # arabic and persian digits
+  fa_digits: '۰۱۲۳۴۵۶۷۸۹'
+  en_digits: '0-9'
+
+dates:
+  months_regex: 'فروردین|اردیبهشت|خرداد|تیر|مرداد|شهریور|مهر|آبان|آذر|دی|بهمن|اسفند'
+
+  # 1403/06/25 or ۱۴۰۳-۰۶-۰۵
+  ymd_sep: '(?P<y>[۰۱۲۳۴۵۶۷۸۹0-9]{4})[/-](?P<m>[۰۱۲۳۴۵۶۷۸۹0-9]{1,2})[/-](?P<d>[۰۱۲۳۴۵۶۷۸۹0-9]{1,2})'
+
+  # ۲۵/شهریور/۱۴۰۳
+  d_mon_y: '(?P<d>[۰۱۲۳۴۵۶۷۸۹0-9]{1,2})/(?:__MONTHS__)/(?P<y>[۰۱۲۳۴۵۶۷۸۹0-9]{4})'
+
+  # «بیست و پنجم شهریور ماه سال ۱۴۰۳» (simplified word-list)
+  words_day: 'اول|یکم|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|سیزدهم|چهاردهم|پانزدهم|شانزدهم|هفدهم|هجدهم|نوزدهم|بیستم|بیست و یکم|بیست و دوم|بیست و سوم|بیست و چهارم|بیست و پنجم|بیست و ششم|بیست و هفتم|بیست و هشتم|بیست و نهم|سی‌ام|سی‌ و یکم'
+  spoken: '(?P<d>__WORDS_DAY__)\s+(?:__MONTHS__)\s+ماه\s+سال\s+(?P<y>[۰۱۲۳۴۵۶۷۸۹0-9]{4})'
+
+abbreviations:
+  # extend as needed
+  tokens: ['ص', 'ره', 'ق\.م', 'س']
+  pattern_template: '\((?:__TOKENS__)\)'
+
+html:
+  # Note: inside single-quoted YAML strings, single quotes are escaped by doubling: ''.
+  id_regex: 'id\s*=\s*["'']([^"'']+)["'']'
+  class_regex: 'class\s*=\s*["'']([^"'']+)["'']'
+
+json:
+  # quick precheck; real validation via json.loads in code
+  loose_boundary: '^\s*[\{\[].*[\}\]]\s*$'
+  validate_with_json_loads: true

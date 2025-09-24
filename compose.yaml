@@ -1,0 +1,81 @@
+version: "3.9"
+
+x-env: &common-env
+  HF_HOME: /caches/hf
+  TRANSFORMERS_CACHE: /caches/hf
+  NLTK_DATA: /caches/nltk
+  STANZA_RESOURCES_DIR: /caches/stanza
+  TOKENIZERS_PARALLELISM: "false"
+  MPLCONFIGDIR: /caches/mpl
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cpu
+    image: nlp-hw-01:cpu
+    env_file: [.env]
+    environment:
+      <<: *common-env
+    volumes:
+      - ./:/workspace:cached
+      - caches-hf:/caches/hf
+      - caches-nltk:/caches/nltk
+      - caches-stanza:/caches/stanza
+      - caches-mpl:/caches/mpl
+      - ./data:/workspace/data
+      - ./reports:/workspace/reports
+    working_dir: /workspace
+    command: bash
+    tty: true
+
+  jupyter:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cpu
+    image: nlp-hw-01:cpu
+    env_file: [.env]
+    environment:
+      <<: *common-env
+    volumes:
+      - ./:/workspace:cached
+      - caches-hf:/caches/hf
+      - caches-nltk:/caches/nltk
+      - caches-stanza:/caches/stanza
+      - caches-mpl:/caches/mpl
+    ports:
+      - "${JUPYTER_PORT-8888}:8888"
+    command: >
+      bash -lc "pip show jupyterlab >/dev/null 2>&1 || pip install jupyterlab &&
+                python docker/downloads.sh &&
+                jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --NotebookApp.token='' --NotebookApp.password=''"
+    profiles: ["notebooks"]
+
+  app-gpu:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gpu
+    image: nlp-hw-01:gpu
+    env_file: [.env]
+    environment:
+      <<: *common-env
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+    runtime: nvidia
+    volumes:
+      - ./:/workspace:cached
+      - caches-hf:/caches/hf
+      - caches-nltk:/caches/nltk
+      - caches-stanza:/caches/stanza
+      - caches-mpl:/caches/mpl
+    command: bash
+    profiles: ["gpu"]
+
+volumes:
+  caches-hf:
+  caches-nltk:
+  caches-stanza:
+  caches-mpl:

@@ -1,0 +1,16 @@
+# centralize all paths so other configs can "inherit" or you can merge at runtime
+data:
+  raw_dir: data/raw
+  interim_dir: data/interim
+  processed_dir: data/processed
+
+parallel:
+  train_tsv: data/processed/train.tsv
+  dev_tsv: data/processed/dev.tsv
+  test_tsv: data/processed/test.tsv
+
+artifacts:
+  vocab_dir: artifacts/vocab
+  checkpoints_dir: artifacts/checkpoints
+  logs_dir: artifacts/logs
+  figures_dir: reports/figures

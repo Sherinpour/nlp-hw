@@ -1,0 +1,31 @@
+# preprocessing pipeline for parallel data
+
+io:
+  input_tsv: data/raw/train_parallel.tsv  # columns: src, tgt
+  output_tsv: data/processed/train.tsv
+
+filters:
+  # sentence length filtering (in tokens; tokenization in code)
+  min_len: 1
+  max_len: 200
+
+normalization:
+  map_arabic_to_persian: true   # ي/ك → ی/ک
+  collapse_spaces: true
+  normalize_zwnj:
+    enabled: true
+    collapse_repeats: true
+  strip_punctuation_edges: false # keep punctuation; change to true if needed
+
+cleanup:
+  drop_if_identical_src_tgt: true
+  drop_duplicates: true
+  dedupe_key: "src|tgt"         # simple concatenation in code
+
+splits:
+  # if you also want to create dev/test from this file
+  create_splits: true
+  ratios: [0.9, 0.05, 0.05]
+  shuffle_seed: 42
+  dev_out: data/processed/dev.tsv
+  test_out: data/processed/test.tsv

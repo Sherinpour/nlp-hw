@@ -1,0 +1,38 @@
+# tokenizers study + runtime tokenization choices
+
+common:
+  lowercase: false          # keep Persian case/diacritics (if present)
+  normalize_zwnj: true      # handle U+200C normalization in code
+  max_length: 256
+  truncate: true
+
+wordpiece:
+  # use a pretrained model (easiest for study)
+  pretrained_model_name: "bert-base-multilingual-cased"
+  add_special_tokens: false
+
+bpe:
+  train:
+    corpus_files:
+      - data/processed/train.txt    # optional plain-text training corpus
+    vocab_size: 8000
+    min_frequency: 2
+    special_tokens: ["[PAD]","[UNK]","[CLS]","[SEP]","[MASK]"]
+    save_path: "artifacts/vocab/bpe_tok.json"
+  use:
+    tokenizer_path: "artifacts/vocab/bpe_tok.json"
+
+sentencepiece:
+  train:
+    input_file: "data/processed/train.txt"
+    model_prefix: "artifacts/vocab/spm"
+    vocab_size: 100        # was 8000; keep ≤ the error’s suggested max
+    model_type: "unigram"
+    character_coverage: 1.0
+
+comparison:
+  # text samples to compare tokenization outputs in the notebook/cli
+  samples:
+    - "این یک متنِ آزمایشی با نیم‌فاصله است."
+    - "امروز ۱۴۰۳/۰۶/۲۵ جلسه‌ی اول NLP برگزار شد."
+    - "برنامه‌نویسی در پایتون با کتابخانه‌های NLP"

@@ -1,0 +1,84 @@
+# simple LSTM encoder-decoder baseline
+
+experiment:
+  name: "seq2seq_lstm_baseline"
+  seed: 2025
+  save_dir: artifacts/checkpoints/seq2seq_lstm_baseline
+  log_dir: artifacts/logs/seq2seq_lstm_baseline
+
+data:
+  train_tsv: data/processed/train.tsv
+  dev_tsv: data/processed/dev.tsv
+  test_tsv: data/processed/test.tsv
+  src_col: "src"
+  tgt_col: "tgt"
+
+tokenization:
+  # for the baseline, keep it simple: whitespace or sentencepiece/BPE tokens already prepared
+  type: "spm"          # "whitespace" | "bpe" | "spm" | "wordpiece"
+  spm_model: "artifacts/vocab/spm.model"
+  max_len_src: 128
+  max_len_tgt: 128
+  special_tokens:
+    pad: "<pad>"
+    sos: "<s>"
+    eos: "</s>"
+    unk: "<unk>"
+
+vocab:
+  # if using whitespace/BPE/your own vocab
+  build_from_training: true
+  vocab_size_src: 12000
+  vocab_size_tgt: 12000
+  min_freq: 1
+  save_to: artifacts/vocab/seq2seq_vocab.json
+
+model:
+  type: "lstm"
+  encoder:
+    emb_dim: 256
+    hidden_dim: 512
+    num_layers: 1
+    dropout: 0.1
+  decoder:
+    emb_dim: 256
+    hidden_dim: 512
+    num_layers: 1
+    dropout: 0.1
+  tie_embeddings: false
+  teacher_forcing: 0.5
+  pad_idx: 0     # will be overwritten after vocab build
+  sos_idx: 1     # will be overwritten after vocab build
+  eos_idx: 2     # will be overwritten after vocab build
+  unk_idx: 3     # will be overwritten after vocab build
+
+training:
+  batch_size: 64
+  epochs: 15
+  optimizer:
+    name: "adam"
+    lr: 0.001
+    weight_decay: 0.0
+  scheduler:
+    name: "none"               # or "plateau"
+    plateau:
+      mode: "min"
+      factor: 0.5
+      patience: 2
+      min_lr: 1.0e-5
+  grad_clip: 1.0
+  device: "auto"               # "cpu" | "cuda" | "auto"
+  num_workers: 2
+  mixed_precision: "off"       # "off" | "fp16"
+
+checkpoints:
+  save_best_on: "dev_loss"     # "dev_loss" | "dev_bleu"
+  keep_last_k: 3
+
+evaluation:
+  metrics: ["loss","bleu","chrf"]
+  beam_search:
+    enabled: false
+    beam_size: 4
+  greedy_max_len: 128
+  detok_join_with_space: true

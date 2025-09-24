@@ -1,0 +1,22 @@
+# configure POS & NER experiments (used by src/linguistics/*.py)
+
+pos:
+  engine: "stanza"
+  stanza:
+    lang: "fa"
+    processors: "tokenize,pos"
+    use_gpu: false
+
+# (optional) also enable NER via Stanza
+ner:
+  engine: "stanza"
+  stanza:
+    lang: "fa"
+    processors: "tokenize,ner"
+    use_gpu: false
+
+evaluation:
+  # optional: small labeled samples to sanity-check outputs (paths or inline data)
+  gold_samples:
+    pos: []
+    ner: []

@@ -1,0 +1,8 @@
+FROM python:3.11-slim
+# (same ENV, user creation, system deps…)
+# …
+COPY requirements.txt ./
+RUN pip install --upgrade pip \
+ && pip install --no-cache-dir -r requirements.txt
+# NOTE: torch GPU will be installed via compose build args or Make target.
+# …
