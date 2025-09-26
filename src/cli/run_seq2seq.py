@@ -23,13 +23,6 @@ def main():
     print("[*] training…")
     train_main(args.model_cfg)
 
-    # test-only fast exit
-    if args.test_only:
-        from src.train.train_seq2seq import eval_on_test
-    if not args.ckpt:
-        raise SystemExit("Provide --ckpt path to a trained model for --test_only.")
-    eval_on_test(args.model_cfg, args.ckpt)
-
     raise SystemExit(0)
 
 if __name__ == "__main__":
