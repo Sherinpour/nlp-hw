@@ -3,6 +3,7 @@ from typing import List, Tuple, Dict
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
+from src.utils.freeze_utils import freeze_all_except_last
 from src.utils.io import load_yaml, read_tsv, load_json
 from src.utils.io import ensure_dir
 from src.utils.seed import set_seed
@@ -130,7 +131,14 @@ def main(config_path="configs/model_seq2seq.yml"):
                   num_layers=cfg["model"]["decoder"]["num_layers"],
                   dropout=cfg["model"]["decoder"]["dropout"])
     model = Seq2Seq(enc, dec, sos_idx=sos_idx, eos_idx=eos_idx, teacher_forcing=cfg["model"]["teacher_forcing"]).to(device)
-
+    freeze_cfg = cfg.get("training", {}).get("freeze", {})
+    if freeze_cfg.get("enable", True):
+        model = freeze_all_except_last(
+            model,
+            likely_heads=freeze_cfg.get("head_names"),
+            last_n_fallback=freeze_cfg.get("last_n_fallback", 1),
+            enable_gc=freeze_cfg.get("gradient_checkpointing", True),
+        )
     # data
     train_loader = make_loader(cfg["data"]["train_tsv"], cfg, src_vocab, tgt_vocab, cfg["training"]["batch_size"], True)
     dev_loader   = make_loader(cfg["data"]["dev_tsv"],   cfg, src_vocab, tgt_vocab, cfg["training"]["batch_size"], False)

@@ -70,6 +70,11 @@ training:
   device: "auto"               # "cpu" | "cuda" | "auto"
   num_workers: 2
   mixed_precision: "off"       # "off" | "fp16"
+  freeze:
+    enable: true
+    head_names: [ "lm_head" ]   # optional; omit to use defaults
+    last_n_fallback: 1
+    gradient_checkpointing: true
 
 checkpoints:
   save_best_on: "dev_loss"     # "dev_loss" | "dev_bleu"
