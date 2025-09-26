@@ -8,5 +8,8 @@ python -m src.cli.run_tokenizers --cfg configs/tokenization.yml --compare
 python -m src.cli.run_seq2seq \
     --prep_cfg configs/preprocess.yml \
     --model_cfg configs/model_seq2seq.yml
+python -m src.test.test_seq2seq \
+  --config configs/model_seq2seq.yml \
+  --ckpt artifacts/checkpoints/seq2seq_lstm_baseline/best.pt
 
 ```
