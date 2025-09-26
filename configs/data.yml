@@ -1,0 +1,7 @@
+raw_path: "data/raw/train.jsonl"   # or csv path you actually use
+image_root: "data/raw/images"      # optional
+eda_out_dir: "reports/eda"
+splits:
+  train: "data/processed/train.jsonl"
+  valid: "data/processed/valid.jsonl"
+  test:  "data/processed/test.jsonl"
