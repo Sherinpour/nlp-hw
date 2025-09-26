@@ -132,13 +132,13 @@ def main(config_path="configs/model_seq2seq.yml"):
                   dropout=cfg["model"]["decoder"]["dropout"])
     model = Seq2Seq(enc, dec, sos_idx=sos_idx, eos_idx=eos_idx, teacher_forcing=cfg["model"]["teacher_forcing"]).to(device)
     freeze_cfg = cfg.get("training", {}).get("freeze", {})
-    if freeze_cfg.get("enable", True):
-        model = freeze_all_except_last(
-            model,
-            likely_heads=freeze_cfg.get("head_names"),
-            last_n_fallback=freeze_cfg.get("last_n_fallback", 1),
-            enable_gc=freeze_cfg.get("gradient_checkpointing", True),
-        )
+    # if freeze_cfg.get("enable", True):
+    #     model = freeze_all_except_last(
+    #         model,
+    #         likely_heads=freeze_cfg.get("head_names"),
+    #         last_n_fallback=freeze_cfg.get("last_n_fallback", 1),
+    #         enable_gc=freeze_cfg.get("gradient_checkpointing", True),
+    #     )
     # data
     train_loader = make_loader(cfg["data"]["train_tsv"], cfg, src_vocab, tgt_vocab, cfg["training"]["batch_size"], True)
     dev_loader   = make_loader(cfg["data"]["dev_tsv"],   cfg, src_vocab, tgt_vocab, cfg["training"]["batch_size"], False)
